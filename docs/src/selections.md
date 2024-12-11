@@ -222,6 +222,27 @@ julia> residues[1]
       10  HB3     ALA     A        1        1   -9.164  -15.063   -8.765  1.00  0.00     1    PROT        10
       11    C     ALA     A        1        1   -7.227  -14.047   -6.599  1.00  0.00     1    PROT        11
       12    O     ALA     A        1        1   -7.083  -13.048   -7.303  1.00  0.00     1    PROT        12
+
+julia> name.(residues[5:10])
+6-element Vector{InlineStrings.String7}:
+ "ASP"
+ "MET"
+ "PRO"
+ "VAL"
+ "GLU"
+ "ARG"
+
+julia> findall(at -> resname(at) == "HIS", residues)
+8-element Vector{Int64}:
+  64
+  91
+ 107
+ 109
+ 114
+ 182
+ 211
+ 235
+ 
 ```
 
 ### Key Note on Residue Vectors
@@ -279,31 +300,31 @@ julia> using PDBTools
 
 julia> ats = read_pdb(PDBTools.CHAINSPDB);
 
-julia> chain.(eachchain(ats))              # Retrieve the names of all chains in the structure
+julia> chain.(eachchain(ats))              
 4-element Vector{InlineStrings.String3}:
  "A"
  "B"
  "C"
  "A"
 
-julia> model.(eachchain(ats))          # Retrieve the model numbers associated with each chain
+julia> model.(eachchain(ats))          
 4-element Vector{Int32}:
  1
  1
  1
  2
 
-julia> chain_A1 = first(eachchain(ats));   # Access the first chain in the iterator
+julia> chain_A1 = first(eachchain(ats));   
 
-julia> resname.(eachresidue(chain_A1))     # Retrieve residue names for chain A in model 1
+julia> resname.(eachresidue(chain_A1))     
 3-element Vector{InlineStrings.String7}:
  "ASP"
  "GLN"
  "LEU"
 
-julia> chain_A2 = last(eachchain(ats));    # Access the last chain in the iterator
+julia> chain_A2 = last(eachchain(ats));    
 
-julia> resname.(eachresidue(chain_A2))     # Retrieve residue names for chain A in model 2
+julia> resname.(eachresidue(chain_A2))     
 3-element Vector{InlineStrings.String7}:
  "ASP"
  "GLN"
@@ -322,7 +343,7 @@ julia> using PDBTools
 julia> ats = read_pdb(PDBTools.CHAINSPDB);
 
 julia> chains = collect(eachchain(ats))
-   Array{Chain,1} with 3 chains.
+  Vector{Chain} with 3 chains.
 
 julia> chain_B = chains[2]
  Chain of name B with 48 atoms.
