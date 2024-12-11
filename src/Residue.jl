@@ -48,8 +48,6 @@ julia> chain.(residues[1:5])
  "A"
  "A"
 
-
-
 julia> mass(residues[1]) ≈ 82.0385
 true
 
