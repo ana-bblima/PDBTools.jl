@@ -50,8 +50,8 @@ julia> chain.(residues[1:5])
 
 
 
-julia> mass(residues[1])
-82.0385
+julia> mass(residues[1]) ≈ 82.0385
+true
 
 ```
 
