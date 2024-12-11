@@ -1,6 +1,4 @@
 """
-    Chain(atoms::AbstractVector{<:Atom}, range::UnitRange{Int})
-
 Creates a Chain data structure. It contains two fields: `atoms` which is a vector of
 `Atom` elements, and `range`, which indicates which atoms of the `atoms` vector
 compose the chain. 
@@ -17,27 +15,27 @@ julia> using PDBTools
 julia> ats = read_pdb(PDBTools.CHAINSPDB);
 
 julia> chains = collect(eachchain(ats))
-   Vector{Chain} with 4 chains.
+   Vector{Chain} with 5 chains.
 
 julia> chains[1]
  Chain of name A with 48 atoms.
    index name resname chain   resnum  residue        x        y        z occup  beta model segname index_pdb
-       1    N     ASP     A        1        1  133.978  119.386  -23.646  1.00  0.00     1    ASYN         1
-       2   CA     ASP     A        1        1  134.755  118.916  -22.497  1.00  0.00     1    ASYN         2
-       3    C     ASP     A        1        1  135.099  117.439  -22.652  1.00  0.00     1    ASYN         3
+       1    N     ASP     A        1        1  133.978  119.386  -23.646  1.00  0.00     1    PROT         1
+       2   CA     ASP     A        1        1  134.755  118.916  -22.497  1.00  0.00     1    PROT         2
+       3    C     ASP     A        1        1  135.099  117.439  -22.652  1.00  0.00     1    PROT         3
                                                        ⋮ 
-      46 HD22     LEU     A        3        3  130.704  113.003  -27.586  1.00  0.00     1    ASYN        46
-      47 HD23     LEU     A        3        3  130.568  111.868  -26.242  1.00  0.00     1    ASYN        47
-      48    O     LEU     A        3        3  132.066  112.711  -21.739  1.00  0.00     1    ASYN        48
+      46 HD22     LEU     A        3        3  130.704  113.003  -27.586  1.00  0.00     1    PROT        46
+      47 HD23     LEU     A        3        3  130.568  111.868  -26.242  1.00  0.00     1    PROT        47
+      48    O     LEU     A        3        3  132.066  112.711  -21.739  1.00  0.00     1    PROT        48
 
 julia> mass(chains[1])
 353.37881000000016 
 
-julia> model(chains[4])
+julia> model(chains[5])
 2
 
 julia> segname(chains[2])
-"ASYN"
+"PROT"
 
 ```
 
@@ -89,8 +87,6 @@ struct EachChain{T<:AbstractVector{<:Atom}}
 end
 
 """
-    eachchain(atoms::AbstractVector{<:Atom})
-
 Iterator for the chains of a selection. 
 
 ### Example
@@ -99,20 +95,23 @@ Iterator for the chains of a selection.
 julia> ats = read_pdb(PDBTools.CHAINSPDB);
 
 julia> length(eachchain(ats))
-4
+5
 
-julia> for chain in eachchain(ats)
+julia> for chain in eachchain(pdb)
             if model(chain) == 1
                 println(name(chain))
                 println(resname.(eachresidue(chain)))
             end
-        end   
+        end
 A
 InlineStrings.String7["ASP", "GLN", "LEU"]
 B
 InlineStrings.String7["ASP", "GLN", "LEU"]
 C
 InlineStrings.String7["ASP", "GLN", "LEU"]
+C
+InlineStrings.String7["SO4"]
+
 ```
 
 """
@@ -197,27 +196,27 @@ end
     ichains = eachchain(pdb)
     @test Chain(pdb, 1:48).range == 1:48
     @test_throws ArgumentError Chain(pdb, 49:97).range 
-    @test length(ichains) == 4
+    @test length(ichains) == 5
     @test firstindex(ichains) == 1
-    @test lastindex(ichains) == 4
+    @test lastindex(ichains) == 5
     @test last(ichains).model == 2
     @test_throws ArgumentError ichains[1]
     chains = collect(eachchain(pdb))
     @test name(chains[3]) == "C"
     @test index.(filter(at -> resname(at) == "ASP" && name(at) == "CA", chains[1])) == [2]
     @test length(findall(at -> resname(at) == "GLN", chains[1])) == 17
-    @test mass(chains[1]) == 353.37881000000016
-    @test segname(chains[3]) == "ASYN"
-    @test model(chains[4]) == 2
-    @test chain(chains[4]) == "A"
+    @test mass(chains[1]) ≈ 353.37881000000016
+    @test segname(chains[4]) == "SO4"
+    @test model(chains[5]) == 2
+    @test chain(chains[4]) == "C"
     @test_throws ArgumentError chains[1][49]
     buff = IOBuffer()
     show(buff, MIME"text/plain"(), chains[1])
     @test length(split(String(take!(buff)))) == 14*7 + 8
     show(buff, MIME"text/plain"(), ichains)
-    @test String(take!(buff)) == " Iterator with 4 chains."
+    @test String(take!(buff)) == " Iterator with 5 chains."
     show(buff, MIME"text/plain"(), chains)
-    @test String(take!(buff)) == "   Vector{PDBTools.Chain} with 4 chains."
+    @test String(take!(buff)) == "   Vector{PDBTools.Chain} with 5 chains."
     show(buff, MIME"text/plain"(), last(eachchain(pdb)))
     @test length(split(String(take!(buff)))) == 14*7 + 8
 
