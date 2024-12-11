@@ -1,6 +1,4 @@
 """
-   Residue(atoms::AbstractVector{<:Atom}, range::UnitRange{Int})
-
 Residue data structure. It contains two fields: `atoms` which is a vector of
 `Atom` elements, and `range`, which indicates which atoms of the `atoms` vector
 compose the residue.
@@ -19,17 +17,38 @@ julia> pdb = wget("1LBD");
 julia> residues = collect(eachresidue(pdb))
    Vector{Residue} with 238 residues.
 
+julia> residues[1]
+ Residue of name SER with 6 atoms.
+   index name resname chain   resnum  residue        x        y        z occup  beta model segname index_pdb
+       1    N     SER     A      225        1   45.228   84.358   70.638  1.00 67.05     1                 1
+       2   CA     SER     A      225        1   46.080   83.165   70.327  1.00 68.73     1                 2
+       3    C     SER     A      225        1   45.257   81.872   70.236  1.00 67.90     1                 3
+       4    O     SER     A      225        1   45.823   80.796   69.974  1.00 64.85     1                 4
+       5   CB     SER     A      225        1   47.147   82.980   71.413  1.00 70.79     1                 5
+       6   OG     SER     A      225        1   46.541   82.639   72.662  1.00 73.55     1                 6
+
+julia> residues[1][1]
+       1    N     SER     A      225        1   45.228   84.358   70.638  1.00 67.05     1                 1
+
+
+julia> resname(residues[8])
+"VAL"
+
 julia> resnum.(residues[1:3])
 3-element Vector{Int32}:
  225
  226
  227
 
-julia> residues[5].chain
-"A"
+julia> chain.(residues[1:5])
+5-element Vector{InlineStrings.String3}:
+ "A"
+ "A"
+ "A"
+ "A"
+ "A"
 
-julia> residues[8].range
-52:58
+
 
 julia> mass(residues[1])
 82.0385
@@ -97,8 +116,6 @@ struct EachResidue{T<:AbstractVector{<:Atom}}
 end
 
 """
-    eachresidue(atoms::AbstractVector{<:Atom})
-
 Iterator for the residues (or molecules) of a selection. 
 
 ### Example
