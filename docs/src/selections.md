@@ -197,6 +197,7 @@ julia> count(atom -> resname(atom) == "ALA", protein)
 
 julia> count(res -> resname(res) == "ALA", eachresidue(protein))
 1
+
 ```
 Here, the first `count` counts the number of atoms with the residue name "ALA", while the second uses `eachresidue` to count the number of residues named "ALA". This highlights the distinction between residue-level and atom-level operations.
 
@@ -207,9 +208,9 @@ Residues produced by `eachresidue` can be collected into a vector for further pr
 ```jldoctest
 julia> using PDBTools
 
-julia> protein = read_pdb(PDBTools.SMALLPDB);
+julia> ats = read_pdb(PDBTools.SMALLPDB);
 
-julia> residues = collect(eachresidue(protein))
+julia> residues = collect(eachresidue(ats))
    Vector{Residue} with 3 residues.
 
 julia> residues[1]
@@ -223,26 +224,16 @@ julia> residues[1]
       11    C     ALA     A        1        1   -7.227  -14.047   -6.599  1.00  0.00     1    PROT        11
       12    O     ALA     A        1        1   -7.083  -13.048   -7.303  1.00  0.00     1    PROT        12
 
-julia> name.(residues[5:10])
-6-element Vector{InlineStrings.String7}:
+julia> name.(residues[1:3])
+3-element Vector{InlineStrings.String7}:
+ "ALA"
+ "CYS"
  "ASP"
- "MET"
- "PRO"
- "VAL"
- "GLU"
- "ARG"
 
-julia> findall(at -> resname(at) == "HIS", residues)
-8-element Vector{Int64}:
-  64
-  91
- 107
- 109
- 114
- 182
- 211
- 235
- 
+julia> findall(at -> resname(at) == "CYS", residues)
+1-element Vector{Int64}:
+ 2
+
 ```
 
 ### Key Note on Residue Vectors
@@ -300,31 +291,29 @@ julia> using PDBTools
 
 julia> ats = read_pdb(PDBTools.CHAINSPDB);
 
-julia> chain.(eachchain(ats))              
-4-element Vector{InlineStrings.String3}:
+julia> chain.(eachchain(ats))
+5-element Vector{InlineStrings.String3}:
  "A"
  "B"
  "C"
+ "C"
  "A"
 
-julia> model.(eachchain(ats))          
-4-element Vector{Int32}:
+julia> model.(eachchain(ats))
+5-element Vector{Int32}:
+ 1
  1
  1
  1
  2
 
-julia> chain_A1 = first(eachchain(ats));   
-
-julia> resname.(eachresidue(chain_A1))     
+julia> resname.(eachresidue(first(eachchain(ats))))
 3-element Vector{InlineStrings.String7}:
  "ASP"
  "GLN"
  "LEU"
 
-julia> chain_A2 = last(eachchain(ats));    
-
-julia> resname.(eachresidue(chain_A2))     
+julia> resname.(eachresidue(last(eachchain(ats))))
 3-element Vector{InlineStrings.String7}:
  "ASP"
  "GLN"
