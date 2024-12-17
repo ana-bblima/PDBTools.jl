@@ -87,6 +87,7 @@ struct EachChain{T<:AbstractVector{<:Atom}}
 end
 
 """
+    eachchain(atoms::AbstractVector{<:Atom})
 Iterator for the chains of a selection. 
 
 ### Example
@@ -122,9 +123,6 @@ Base.collect(c::EachChain) = collect(Chain, c)
 Base.length(chains::EachChain) = sum(1 for chain in chains)
 Base.firstindex(chains::EachChain) = 1
 Base.lastindex(chains::EachChain) = length(chains)
-# Base.reverse(chains::EachChain) = reverse(chains)
-# #Base.last(chains::EachChain) =  first(reverse(chains))
-# Base.last(c::EachChain) = @inbounds c[max(firstindex(c), end + 1 - length(c)):end]
 function Base.last(chains::EachChain) 
     local last_chain
     for chain in chains 
