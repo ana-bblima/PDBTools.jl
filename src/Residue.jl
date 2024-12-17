@@ -27,10 +27,7 @@ julia> residues[1]
        5   CB     SER     A      225        1   47.147   82.980   71.413  1.00 70.79     1                 5
        6   OG     SER     A      225        1   46.541   82.639   72.662  1.00 73.55     1                 6
 
-julia> residues[1][1]
-       1    N     SER     A      225        1   45.228   84.358   70.638  1.00 67.05     1                 1
-
-
+      
 julia> resname(residues[8])
 "VAL"
 
@@ -39,7 +36,7 @@ julia> resnum.(residues[1:3])
  225
  226
  227
-
+ 
 julia> chain.(residues[1:5])
 5-element Vector{InlineStrings.String3}:
  "A"
@@ -114,6 +111,7 @@ struct EachResidue{T<:AbstractVector{<:Atom}}
 end
 
 """
+    eachresidue(atoms::AbstractVector{<:Atom})
 Iterator for the residues (or molecules) of a selection. 
 
 ### Example
